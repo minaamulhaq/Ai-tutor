@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StudentSettingsState, ActiveSession } from "../types";
+import { performSignOut } from "@/lib/auth/logout";
 
 interface SecuritySectionProps {
   settings: StudentSettingsState;
@@ -265,7 +266,17 @@ export function SecuritySection({ settings, onChange }: SecuritySectionProps) {
                 </div>
               </div>
 
-              {!sess.isCurrent && (
+              {sess.isCurrent ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => performSignOut("/login")}
+                  className="rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 text-xs h-8 px-3 cursor-pointer self-end sm:self-center"
+                >
+                  Sign Out
+                </Button>
+              ) : (
                 <Button
                   type="button"
                   variant="outline"

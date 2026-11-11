@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown";
+import { performSignOut } from "@/lib/auth/logout";
 
 /**
  * Interface representing the teacher user profile for ZuhDemy.
@@ -119,6 +120,13 @@ export function TeacherHeader() {
       window.removeEventListener("zuhdemy:avatar-updated", handleAvatarChange);
     };
   }, []);
+
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    await performSignOut("/login");
+  };
 
   return (
     <header className="h-16 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 select-none">
@@ -254,12 +262,13 @@ export function TeacherHeader() {
               <DropdownMenuItem
                 variant="destructive"
                 className="cursor-pointer"
-                onClick={() => {
-                  console.log("Teacher signing out...");
-                }}
+                disabled={isSigningOut}
+                onClick={handleSignOut}
               >
                 <LogOut className="size-4" />
-                <span className="font-medium">Sign Out</span>
+                <span className="font-medium">
+                  {isSigningOut ? "Signing Out..." : "Sign Out"}
+                </span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

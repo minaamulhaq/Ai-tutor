@@ -67,6 +67,7 @@ import {
   apiUpdateTeacherProfile,
 } from "@/components/teacher/profile/profile-service";
 import { createClient } from "@/utils/supabase/client";
+import { performSignOut } from "@/lib/auth/logout";
 import {
   getTeacherGoogleStatusAction,
   disconnectTeacherGoogleAction,
@@ -395,15 +396,7 @@ export function TeacherSettingsView() {
   // Logout Flow
   const handleLogout = async () => {
     setIsLoggingOut(true);
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-    } catch {
-      // ignore
-    }
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    await performSignOut("/login");
   };
 
   // Delete Account Flow

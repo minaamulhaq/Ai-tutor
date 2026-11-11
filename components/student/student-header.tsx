@@ -27,6 +27,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown";
 import { getStudentProfileAction } from "@/app/actions/student";
+import { performSignOut } from "@/lib/auth/logout";
 
 export interface StudentProfile {
   id: string;
@@ -115,16 +116,11 @@ export function StudentHeader() {
     };
   }, []);
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-    } catch {
-      // ignore
-    }
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    setIsLoggingOut(true);
+    await performSignOut("/login");
   };
 
   return (
@@ -275,11 +271,12 @@ export function StudentHeader() {
             <DropdownMenuItem className="p-0 rounded-xl cursor-pointer">
               <button
                 type="button"
+                disabled={isLoggingOut}
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50/80 rounded-xl transition-colors cursor-pointer"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50/80 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
               >
                 <LogOut className="size-4 text-rose-500" />
-                <span>Log Out</span>
+                <span>{isLoggingOut ? "Logging Out..." : "Log Out"}</span>
               </button>
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { performSignOut } from "@/lib/auth/logout";
 
 export interface StudentNavItem {
   title: string;
@@ -86,6 +87,12 @@ export function StudentSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    await performSignOut("/login");
+  };
 
   useEffect(() => {
     getUnreadMessageCountAction()
@@ -205,6 +212,18 @@ export function StudentSidebar() {
             Account & Support
           </div>
           {renderNavLinks(secondaryStudentNavItems)}
+
+          <button
+            type="button"
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            className="w-full group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-150 cursor-pointer disabled:opacity-50"
+          >
+            <LogOut className="size-4.5 shrink-0 text-slate-400 group-hover:text-rose-500 transition-transform duration-150 group-hover:scale-110" />
+            <span className="truncate flex-1 text-left">
+              {isSigningOut ? "Signing Out..." : "Sign Out"}
+            </span>
+          </button>
         </nav>
       </div>
 
@@ -231,13 +250,24 @@ export function StudentSidebar() {
               {student.role}
             </span>
           </div>
-          <Link
-            href="/student/settings"
-            title="Account Settings"
-            className="size-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
-          >
-            <Settings className="size-3.5" />
-          </Link>
+          <div className="flex items-center gap-1">
+            <Link
+              href="/student/settings"
+              title="Account Settings"
+              className="size-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <Settings className="size-3.5" />
+            </Link>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              title="Sign Out"
+              className="size-7 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50"
+            >
+              <LogOut className="size-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -17,8 +17,10 @@ import {
   Sparkles,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { performSignOut } from "@/lib/auth/logout";
 
 interface NavItem {
   title: string;
@@ -80,6 +82,12 @@ export function TeacherSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState<number | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    await performSignOut("/login");
+  };
 
   useEffect(() => {
     getUnreadMessageCountAction()
@@ -177,6 +185,18 @@ export function TeacherSidebar() {
             </Link>
           );
         })}
+
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+          className="w-full group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-150 cursor-pointer disabled:opacity-50 mt-1"
+        >
+          <LogOut className="size-4.5 shrink-0 text-slate-400 group-hover:text-rose-500 transition-transform duration-150 group-hover:scale-110" />
+          <span className="truncate flex-1 text-left">
+            {isSigningOut ? "Signing Out..." : "Sign Out"}
+          </span>
+        </button>
       </nav>
 
       {/* Sidebar Footer: Teacher Profile */}
@@ -198,6 +218,15 @@ export function TeacherSidebar() {
               Senior Instructor
             </span>
           </div>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            title="Sign Out"
+            className="size-7 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+          >
+            <LogOut className="size-3.5" />
+          </button>
         </div>
       </div>
     </div>

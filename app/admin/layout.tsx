@@ -11,7 +11,9 @@ import {
   AlertOctagon,
   BookOpen,
   Landmark,
+  LogOut,
 } from "lucide-react";
+import { signOutAction } from "@/app/actions/authActions";
 
 export const metadata = {
   title: "Financial Management & Escrow Tracking | ZuhDemy Admin",
@@ -67,6 +69,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               Student Discovery
             </Link>
+
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                className="text-xs font-semibold text-rose-400 hover:text-rose-300 px-3 py-1.5 rounded-lg hover:bg-rose-950/40 border border-rose-900/50 transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <LogOut className="size-3.5" />
+                <span>Sign Out</span>
+              </button>
+            </form>
           </div>
         </div>
       </header>
