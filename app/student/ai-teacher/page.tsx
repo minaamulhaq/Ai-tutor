@@ -14,8 +14,6 @@ export default function AiTeacherPage() {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isHandRaised, setIsHandRaised] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isAiSpeaking, setIsAiSpeaking] = useState(false);
-  const [externalDrawTrigger, setExternalDrawTrigger] = useState<string | null>(null);
 
   const handleLeaveCall = () => {
     router.push("/student");
@@ -34,23 +32,18 @@ export default function AiTeacherPage() {
           <MeetChatDrawer
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
-            onTriggerBoardDraw={(prompt) => setExternalDrawTrigger(prompt)}
           />
         )}
 
-        {/* Center: Large Google Meet Excalidraw Board */}
+        {/* Center: Clean Board with Table & Drawing Tools */}
         <section className="flex-1 h-full min-h-0 min-w-0">
-          <CanvasBoard
-            onAiSpeakingChange={setIsAiSpeaking}
-            externalDrawTrigger={externalDrawTrigger}
-            onClearExternalTrigger={() => setExternalDrawTrigger(null)}
-          />
+          <CanvasBoard />
         </section>
 
         {/* Right Side: Participant Squares (AI Avatar & User Video) */}
         <aside className="w-64 sm:w-72 xl:w-80 flex flex-col gap-4 shrink-0 justify-center">
           {/* AI Teacher Avatar Square */}
-          <AiAvatarTile isSpeaking={isAiSpeaking} />
+          <AiAvatarTile isSpeaking={false} />
 
           {/* User Screen Square (Camera Feed) */}
           <UserScreenTile
