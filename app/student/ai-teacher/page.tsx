@@ -6,6 +6,7 @@ import { CanvasBoard } from "@/components/student/ai-teacher/canvas-board";
 import { AiAvatarTile, UserScreenTile } from "@/components/student/ai-teacher/meet-tiles";
 import { MeetBottomBar } from "@/components/student/ai-teacher/meet-bottom-bar";
 import { MeetChatDrawer } from "@/components/student/ai-teacher/meet-chat-drawer";
+import { useRealtimeTutor } from "@/hooks/use-realtime-tutor";
 
 export default function AiTeacherPage() {
   const router = useRouter();
@@ -15,7 +16,20 @@ export default function AiTeacherPage() {
   const [isHandRaised, setIsHandRaised] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const {
+    isConnected,
+    isAiSpeaking,
+    boardActionQueue,
+    messages,
+    updateCanvasContext,
+    sendTextQuery,
+    flushAudioPlaybackQueue,
+  } = useRealtimeTutor({
+    isMicEnabled: isMicOn,
+  });
+
   const handleLeaveCall = () => {
+    flushAudioPlaybackQueue();
     router.push("/student");
   };
 
@@ -32,18 +46,24 @@ export default function AiTeacherPage() {
           <MeetChatDrawer
             isOpen={isChatOpen}
             onClose={() => setIsChatOpen(false)}
+            messages={messages}
+            isConnected={isConnected}
+            onSendMessage={sendTextQuery}
           />
         )}
 
-        {/* Center: Clean Board with Table & Drawing Tools */}
+        {/* Center: Clean Board with Table & Drawing Tools synced with FastAPI */}
         <section className="flex-1 h-full min-h-0 min-w-0">
-          <CanvasBoard />
+          <CanvasBoard
+            onContextChange={updateCanvasContext}
+            incomingActions={boardActionQueue}
+          />
         </section>
 
         {/* Right Side: Participant Squares (AI Avatar & User Video) */}
         <aside className="w-64 sm:w-72 xl:w-80 flex flex-col gap-4 shrink-0 justify-center">
           {/* AI Teacher Avatar Square */}
-          <AiAvatarTile isSpeaking={false} />
+          <AiAvatarTile isSpeaking={isAiSpeaking} />
 
           {/* User Screen Square (Camera Feed) */}
           <UserScreenTile

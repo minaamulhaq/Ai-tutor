@@ -175,9 +175,9 @@ export async function ensureBookingSystemSchema() {
         END IF;
       END $$;
     `);
-
-    initialized = true;
   } catch (error) {
+    // Allow a retry on the next request if the schema setup failed
+    globalForInit.__bookingSchemaInitialized = false;
     console.warn("Notice: ensureBookingSystemSchema warning:", error);
   }
 }
